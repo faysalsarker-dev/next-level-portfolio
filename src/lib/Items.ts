@@ -87,19 +87,17 @@ export const services = [
 
 
 export const techStack = [
-  { name: "React.js", icon: "/atom.png" },
-  { name: "Next.js", icon: "/lightbulb.png" },
-  { name: "Node.js", icon: "/icons/nodejs.svg" },
-  { name: "Express.js", icon: "/icons/express.svg" },
-  { name: "MongoDB", icon: "/icons/mongodb.svg" },
-  { name: "PostgreSQL", icon: "/icons/postgresql.svg" },
-  { name: "Redux", icon: "/icons/redux.svg" },
-  { name: "TypeScript", icon: "/icons/typescript.svg" },
-  { name: "Prisma", icon: "/icons/prisma.svg" },
-  { name: "Tailwind CSS", icon: "/icons/tailwind.svg" },
-  { name: "AWS", icon: "/icons/aws.svg" },
-  { name: "WordPress", icon: "/icons/wordpress.svg" },
-  { name: "Google Analytics", icon: "/icons/ga.svg" },
+  { name: "React.js", icon: "/react.png" },
+  { name: "Next.js", icon: "/nextjs.png" },
+  { name: "Node.js", icon: "/js.png" },
+  { name: "Express.js", icon: "/mongodb.png" },
+  { name: "MongoDB", icon: "/express.png" },
+  { name: "PostgreSQL", icon: "/postgress.png"},
+  { name: "Redux", icon: "/redux.png" },
+  { name: "TypeScript", icon: "/ts.png" },
+  { name: "Prisma", icon: "/prisma.png" },
+  { name: "Tailwind CSS", icon: "/tailwindcss.png" },
+
 ];
 
 
@@ -159,88 +157,3 @@ export const reviews = [
 
 
 
-export const globeConfig = {
-    pointSize: 3,
-  
-    // atmosphereColor: "#ffffff",
-    atmosphereColor: "#782EFA",
-    showAtmosphere: true,
-    atmosphereAltitude: 0.2,
-    // polygonColor: "rgba(255,255,255,0.7)",
-    polygonColor: "#782EFA",
-    globeColor: "#15101E",
-    // globeColor: "#782EFA",
-    emissive: "#1B1427",
-    emissiveIntensity: 0.1,
-    shininess: 0.9,
-    arcTime: 1000,
-    arcLength: 0.9,
-    rings: 1,
-    maxRings: 6,
-  };
-
-export  const arcData = [
-    {
-      startLat: 40.7128,
-      startLng: -74.006,
-      endLat: 51.5074,
-      endLng: -0.1278,
-      color: "#3DF2B3", // secondary
-      arcAlt: 0.25,
-      order: 1,
-    },
-    {
-      startLat: 35.6895,
-      startLng: 139.6917,
-      endLat: -33.8688,
-      endLng: 151.2093,
-      color: "#3DF2B3", // secondary
-      arcAlt: 0.25,
-      order: 2,
-    },
-    {
-      startLat: 29.6139,
-      startLng: 77.209,
-      endLat: 37.7749,
-      endLng: -122.4194,
-      color: "#3DF2B3", // secondary
-      arcAlt: 0.25,
-      order: 3,
-    },
-    {
-      startLat: 65.6895,
-      startLng: 139.6917,
-      endLat: -33.8688,
-      endLng: 151.2093,
-      color: "#F622C2", // secondary
-      arcAlt: 0.25,
-      order: 2,
-    },
-    {
-      startLat: 88.6139,
-      startLng: 77.209,
-      endLat: 37.7749,
-      endLng: -122.4194,
-      color: "#F622C2", // secondary
-      arcAlt: 0.25,
-      order: 3,
-    },
-    {
-      startLat: 95.6895,
-      startLng: 139.6917,
-      endLat: -33.8688,
-      endLng: 151.2093,
-      color: "#F622C2", // secondary
-      arcAlt: 0.25,
-      order: 2,
-    },
-    {
-      startLat: 38.6139,
-      startLng: 77.209,
-      endLat: 37.7749,
-      endLng: -122.4194,
-      color: "#3DF2B3", // secondary
-      arcAlt: 0.25,
-      order: 3,
-    },
-  ];

@@ -1,8 +1,12 @@
-import { Button } from "@/components/ui/button"
+import HeroSection from "@/components/modules/home/HeroSection";
+import TechStack from "@/components/modules/home/techStack";
 export default function Home() {
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-<Button variant="secondary" size="lg">Hello World</Button>
-    </div>
+    <>
+
+<HeroSection/>
+
+<TechStack/>
+    </>
   );
 }
