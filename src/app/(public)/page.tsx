@@ -1,3 +1,5 @@
+import ContactSection from "@/components/modules/home/ContactSection";
+import FeaturedBlogs from "@/components/modules/home/FeaturedBlogs";
 import HeroSection from "@/components/modules/home/HeroSection";
 import TechStack from "@/components/modules/home/techStack";
 export default function Home() {
@@ -7,6 +9,10 @@ export default function Home() {
 <HeroSection/>
 
 <TechStack/>
+
+
+<FeaturedBlogs/>
+<ContactSection/>
     </>
   );
 }
