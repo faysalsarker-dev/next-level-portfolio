@@ -3,6 +3,8 @@ import React, { useRef } from "react";
 import { MessageSquareText, SendHorizonal } from "lucide-react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 
 const ContactSection = () => {
   const msgBoxRef = useRef(null);
@@ -113,27 +115,27 @@ const ContactSection = () => {
           className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-6 md:p-8 shadow-2xl space-y-6"
         >
           <form className="space-y-4">
-            <input
+            <Input
               ref={nameRef}
               type="text"
               placeholder="Your Name"
-              className="w-full px-4 py-3 rounded-lg bg-[--color-surface-2] border border-[--color-surface-2] text-[--color-text-main] focus:outline-none focus:ring-2 focus:ring-primary"
+              className="w-full px-4 py-3 rounded-lg bg-popover/50 border border-popover text-[--color-text-main] focus:outline-none focus:ring-2 focus:ring-primary"
             />
-            <input
+            <Input
               type="email"
               placeholder="Email Address"
-              className="w-full px-4 py-3 rounded-lg bg-[--color-surface-2] border border-[--color-surface-2] text-[--color-text-main] focus:outline-none focus:ring-2 focus:ring-primary"
+              className="w-full px-4 py-3 rounded-lg bg-popover/50 border border-popover text-[--color-text-main] focus:outline-none focus:ring-2 focus:ring-primary"
             />
-            <input
+            <Input
               type="text"
               placeholder="WhatsApp (optional)"
-              className="w-full px-4 py-3 rounded-lg bg-[--color-surface-2] border border-[--color-surface-2] text-[--color-text-main] focus:outline-none focus:ring-2 focus:ring-primary"
+              className="w-full px-4 py-3 rounded-lg bg-popover/50 border border-popover text-[--color-text-main] focus:outline-none focus:ring-2 focus:ring-primary"
             />
-            <textarea
+            <Textarea
               placeholder="How can I help you?"
               rows={4}
-              className="w-full px-4 py-3 rounded-2xl bg-[--color-surface-2] border border-[--color-surface-2] text-[--color-text-main] focus:outline-none focus:ring-2 focus:ring-primary"
-            ></textarea>
+              className="w-full min-h-[130px] px-4 py-3 rounded-2xl bg-popover/50 border border-popover text-[--color-text-main] focus:outline-none focus:ring-2 focus:ring-primary"
+            />
 
             <button
               type="button"
