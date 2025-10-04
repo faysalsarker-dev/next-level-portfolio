@@ -13,7 +13,7 @@ import { ListPlugin } from "@lexical/react/LexicalListPlugin";
 import { LinkPlugin } from "@lexical/react/LexicalLinkPlugin";
 import { OnChangePlugin } from "@lexical/react/LexicalOnChangePlugin";
 import { EditorState } from "lexical";
-import { ToolbarPlugin } from "./editor/ToolbarPlugin";
+import { ToolbarPlugin } from "@/components/shared/editor/ToolbarPlugin";
 
 interface RichTextEditorProps {
   value?: string;

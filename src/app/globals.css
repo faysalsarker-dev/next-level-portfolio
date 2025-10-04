@@ -324,6 +324,47 @@
 }
 
 
+.glass-card{
+    backdrop-filter: blur(16px) saturate(200%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+    background-color: rgba(17, 25, 40, 0.75);
+   
+    border: 1px solid rgba(255, 255, 255, 0.125);
+   
+
+}
+
+  .content::before {
+    content: "";
+    width: 8rem;
+    height: 8rem;
+    border-radius: 50%;
+    position: absolute;
+    background: linear-gradient(135deg, #F622C2, #3DF2B3);
+    filter: blur(120px);
+    z-index: -1;
+     bottom: -2rem;
+     right:-3rem;
+     overflow: hidden;
+    
+  
+  }
+.content::after {
+    content: "";
+    width: 8rem;
+    height: 8rem;
+    border-radius: 50%;
+    position: absolute;
+    background: linear-gradient(135deg, #BB86FC, #6200EE);
+    filter: blur(120px);
+    z-index: -1;
+     top: -2rem;
+     left:-3rem;
+     overflow: hidden;
+    
+  
+  }
+
 
 
 

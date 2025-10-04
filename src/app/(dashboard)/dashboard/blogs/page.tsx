@@ -19,8 +19,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { BlogForm } from "@/components/admin/BlogForm";
 import { Badge } from "@/components/ui/badge";
+import { BlogForm } from "@/components/modules/admin/BlogForm";
 
 const mockBlogs = [
   {

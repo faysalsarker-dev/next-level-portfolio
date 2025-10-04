@@ -22,19 +22,12 @@ export function AdminTopbar() {
   };
 
   return (
-    <header className="sticky top-0 z-40 border-b border-border bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/60">
+    <div className="w-full border-b border-border bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/60">
       <div className="flex h-16 items-center gap-4 px-6">
         <SidebarTrigger className="-ml-2" />
         
         <div className="flex-1 flex items-center gap-4 max-w-2xl">
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-            <Input
-              type="search"
-              placeholder="Search blogs, projects..."
-              className="pl-9 w-full bg-muted/50 border-border/50 focus-visible:ring-primary"
-            />
-          </div>
+       
         </div>
 
         <div className="flex items-center gap-2">
@@ -80,6 +73,6 @@ export function AdminTopbar() {
           </DropdownMenu>
         </div>
       </div>
-    </header>
+    </div>
   );
 }

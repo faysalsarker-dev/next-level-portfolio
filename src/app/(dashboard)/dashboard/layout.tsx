@@ -7,18 +7,20 @@ interface AdminLayoutProps {
   children: ReactNode;
 }
 
-export const AdminLayout = ({ children }: AdminLayoutProps) => {
+export default function AdminLayout({ children }: AdminLayoutProps) {
   return (
     <SidebarProvider>
-      <div className="min-h-screen flex w-full">
-        <AdminSidebar />
-        <div className="flex-1 flex flex-col overflow-hidden">
+      <div className="min-h-screen flex w-full bg-background">
+<div className="min-w-64">
+          <AdminSidebar />
+  
+</div>        <div className="flex-1 flex flex-col">
           <AdminTopbar />
           <main className="flex-1 overflow-auto">
-            {children}
+        {children}
           </main>
         </div>
       </div>
     </SidebarProvider>
   );
-};
+}

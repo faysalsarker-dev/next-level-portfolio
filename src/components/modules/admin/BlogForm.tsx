@@ -11,8 +11,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ImageUpload } from "./ImageUpload";
 import { RichTextEditor } from "./RichTextEditor";
+import { ImageUpload } from "@/components/shared/ImageUpload";
 
 interface BlogFormProps {
   blog?;
