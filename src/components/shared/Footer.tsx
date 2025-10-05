@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { Instagram, Linkedin, Github, Mail, Phone } from "lucide-react";
+import { Instagram, Linkedin, Github, Mail, Phone, Facebook } from "lucide-react";
 import { navItems } from "@/lib/Items";
 
 const Footer = () => {
@@ -29,12 +29,12 @@ const Footer = () => {
 
           <div className="flex flex-wrap gap-4">
             <Button asChild variant="default" className="animate-glow border border-primary/40">
-              <a href="https://wa.me/+8801760000000" target="_blank" rel="noopener noreferrer">
+              <a href="https://wa.me/+8801342951525" target="_blank" rel="noopener noreferrer">
                 WhatsApp Me
               </a>
             </Button>
             <Button asChild variant="outline" className="hover:bg-secondary/10">
-              <a href="https://linkedin.com/in/your-profile" target="_blank" rel="noopener noreferrer">
+              <a href="https://www.linkedin.com/in/faysalsarker-dev/" target="_blank" rel="noopener noreferrer">
                 LinkedIn
               </a>
             </Button>
@@ -60,10 +60,10 @@ const Footer = () => {
             <h4 className="text-white/90 font-semibold mb-3">Contact</h4>
             <ul className="space-y-2">
               <li className="flex items-center gap-2 text-white/70">
-                <Phone className="w-4 h-4" /> +88017XXXXXXXX
+                <Phone className="w-4 h-4" /> +8801342951525
               </li>
               <li className="flex items-center gap-2 text-white/70">
-                <Mail className="w-4 h-4" /> faysal@email.com
+                <Mail className="w-4 h-4" /> faysalsarker.dev@gmail.com
               </li>
             </ul>
           </div>
@@ -72,25 +72,32 @@ const Footer = () => {
             <h4 className="text-white/90 font-semibold mb-3">Socials</h4>
             <div className="flex gap-4">
               <a
-                href="https://linkedin.com/in/your-profile"
+                href="https://www.linkedin.com/in/faysalsarker-dev/"
                 target="_blank"
                 className="text-white/70 hover:text-primary transition-colors"
               >
                 <Linkedin className="w-5 h-5" />
               </a>
               <a
-                href="https://github.com/your-handle"
+                href="https://github.com/faysalsarker-dev"
                 target="_blank"
                 className="text-white/70 hover:text-primary transition-colors"
               >
                 <Github className="w-5 h-5" />
               </a>
               <a
-                href="https://instagram.com/yourhandle"
+                href="https://www.instagram.com/faysal_sarker_/"
                 target="_blank"
                 className="text-white/70 hover:text-primary transition-colors"
               >
                 <Instagram className="w-5 h-5" />
+              </a>
+              <a
+                href="https://www.facebook.com/faysal.sharker.140/"
+                target="_blank"
+                className="text-white/70 hover:text-primary transition-colors"
+              >
+                <Facebook className="w-5 h-5" />
               </a>
             </div>
           </div>

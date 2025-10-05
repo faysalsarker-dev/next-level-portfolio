@@ -6,16 +6,11 @@ import { cn } from "@/lib/utils"
 import { motion } from "framer-motion"
 import { useGSAP } from "@gsap/react"
 import gsap from "gsap"
-import { ChevronDown, Globe2 } from "lucide-react"
-import Link from "next/link"
+
 import { usePathname } from "next/navigation"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+
 import { navItems } from "@/lib/Items"
+import Link from "next/link"
 
 
 
@@ -67,44 +62,30 @@ export default function Navbar() {
         <nav className="   absolute left-1/2 -translate-x-1/2 hidden md:flex gap-6 text-sm">
           {navItems.map((item, index) => (
             <motion.div key={index} whileHover={{ scale: 1.05 }}>
-              <Link
+              <a
                 href={item.href}
+
+          
                 className={cn(
                   "nav-link transition-colors",
-                  pathname === item.href
-                    ? "text-white font-semibold"
-                    : "text-white/70 hover:text-white"
+                 
+                     "text-white/70 hover:text-white"
                 )}
               >
                 {item.label}
-              </Link>
+              </a>
             </motion.div>
           ))}
         </nav>
 
         {/* Actions */}
         <div className="hidden md:flex items-center gap-4">
-          {/* Language Dropdown */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="ghost"
-                className="text-white/80 hover:text-white border border-white/10 bg-white/5 backdrop-blur-md p-2"
-              >
-                <Globe2 className="w-5 h-5" />
-                <ChevronDown className="w-4 h-4 ml-1" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="bg-background/60 backdrop-blur-md text-white border border-white/10">
-              <DropdownMenuItem>English</DropdownMenuItem>
-              <DropdownMenuItem>বাংলা</DropdownMenuItem>
-              <DropdownMenuItem>Español</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-
-          <Button className="bg-primary text-white hover:bg-primary/90 shadow-[0_0_14px_#782EFA]">
-            Let’s Talk
-          </Button>
+      
+    <a href="#contact">
+            <Button className="bg-primary text-white hover:bg-primary/90 shadow-[0_0_14px_#782EFA]">
+              Let’s Talk
+            </Button>
+    </a>
         </div>
 
         {/* Mobile Menu Toggle */}

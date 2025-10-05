@@ -1,128 +1,159 @@
 "use client"
-import { LayoutDashboard, FileText, FolderGit2, Settings, TrendingUp, Users, Image, Code } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
-  SidebarGroupLabel,
+  SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarFooter,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
+import { usePathname } from "next/navigation";
+import { User } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from 'next/navigation';
 
-const mainMenuItems = [
-  { title: "Overview", url: "/admin", icon: LayoutDashboard },
-  { title: "Blogs", url: "/admin/blogs", icon: FileText },
-  { title: "Projects", url: "/admin/projects", icon: FolderGit2 },
-];
+const routes = [
 
-const contentItems = [
-  { title: "Media", url: "/admin/media", icon: Image },
-  { title: "Analytics", url: "/admin/analytics", icon: TrendingUp },
-];
+  { name: "Dashboard", path: "/dashboard", icon: User },
+  { name: "Blogs", path: "/dashboard/blogs", icon: User },
+  { name: "Projects", path: "/dashboard/projects", icon: User },
 
-const systemItems = [
-  { title: "Settings", url: "/admin/settings", icon: Settings },
-];
+]
 
-export function AdminSidebar() {
-  const { state } = useSidebar();
-  const pathname = usePathname();
-  const currentPath = pathname;
 
-  const isActive = (path: string) => {
-    if (path === "/admin") {
-      return currentPath === path;
-    }
-    return currentPath.startsWith(path);
-  };
 
-  const getNavClass = (path: string) => {
-    const active = isActive(path);
-    return active
-      ? "bg-sidebar-accent text-sidebar-accent-foreground font-medium border-l-2 border-sidebar-primary"
-      : "hover:bg-sidebar-accent/50 text-sidebar-foreground/80 hover:text-sidebar-foreground transition-all";
-  };
-
-  const renderMenuItems = (items: typeof mainMenuItems) => (
-    <SidebarMenu>
-      {items.map((item) => (
-        <SidebarMenuItem key={item.title}>
-          <SidebarMenuButton asChild>
-            <Link href={item.url} className={getNavClass(item.url)}>
-              <item.icon className="h-5 w-5" />
-              {state !== "collapsed" && <span>{item.title}</span>}
-            </Link>
-          </SidebarMenuButton>
-        </SidebarMenuItem>
-      ))}
-    </SidebarMenu>
-  );
+export function AppSidebar() {
+  const location = usePathname();
+  const { open } = useSidebar();
 
   return (
-    <Sidebar
-      className={state === "collapsed" ? "w-16" : "w-64"}
-      collapsible="icon"
+    <Sidebar 
+      collapsible="icon" 
+      className="border-r border-sidebar-border bg-sidebar-bg transition-all duration-300"
     >
-      <div className="flex items-center gap-3 p-4 border-b border-sidebar-border">
-        {state !== "collapsed" ? (
+      <SidebarContent className="flex flex-col h-full">
+        {/* Header */}
+        <SidebarHeader className="border-b border-sidebar-border p-4">
           <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center">
-              <Code className="h-5 w-5 text-primary-foreground" />
+            <div className="flex-shrink-0">
+              <Image 
+                src='/public/faysalsarker.png' 
+                alt="EduDashboard Logo" 
+                fill
+                className="w-10 h-10 rounded-xl object-cover shadow-lg ring-2 ring-primary/20"
+              />
             </div>
-            <div>
-              <h2 className="text-sm font-bold text-sidebar-foreground">Admin Panel</h2>
-              <p className="text-xs text-sidebar-foreground/60">Dashboard</p>
+
+            {open && (
+              <div className="text-left leading-tight animate-fade-in">
+                <h1 className="font-bold text-lg text-foreground">
+                  EduDashboard
+                </h1>
+                <p className="text-xs text-muted-foreground">
+                  Admin Portal
+                </p>
+              </div>
+            )}
+          </div>
+        </SidebarHeader>
+
+        {/* Navigation Menu */}
+        <div className="flex-1 overflow-hidden">
+          <ScrollArea className="h-full py-4">
+            <SidebarGroup>
+              <SidebarGroupContent>
+                <SidebarMenu className="space-y-1 px-3">
+                  {routes.map((item) => {
+                    const isActive = location === item.path;
+                    return (
+                      <SidebarMenuItem key={item.name}>
+                        <SidebarMenuButton
+                          size="lg"
+                          className={cn(
+                            "group relative w-full transition-all duration-200 hover-lift",
+                            "hover:bg-sidebar-hover hover:shadow-md",
+                            isActive && [
+                              "bg-primary/20 border border-primary/30",
+                              "text-primary font-semibold shadow-md",
+                              "route-indicator active"
+                            ]
+                          )}
+                          asChild
+                        >
+                          <Link href={item.path} className="flex items-center gap-3">
+                            <item.icon
+                              className={cn(
+                                "w-5 h-5 transition-colors",
+                                isActive ? "text-primary" : "text-muted-foreground group-hover:text-foreground"
+                              )}
+                            />
+                            {open && (
+                              <span className="font-medium">
+                                {item.name}
+                              </span>
+                            )}
+                            {/* Notification badges for specific routes */}
+                            {open && item.name === "Messages" && (
+                              <Badge variant="destructive" className="ml-auto h-5 w-5 flex items-center justify-center text-xs p-0">
+                                3
+                              </Badge>
+                            )}
+                            {open && item.name === "Students" && (
+                              <Badge variant="secondary" className="ml-auto h-5 px-2 text-xs">
+                                142
+                              </Badge>
+                            )}
+                          </Link>
+                        </SidebarMenuButton>
+                      </SidebarMenuItem>
+                    );
+                  })}
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </SidebarGroup>
+          </ScrollArea>
+        </div>
+
+        {/* Footer */}
+        <SidebarFooter className="border-t border-sidebar-border p-4 mt-auto">
+          {open ? (
+            <div className="text-center animate-fade-in">
+              <p className="text-xs text-muted-foreground">
+                Built with 💙 by{" "}
+                <a
+                  href="https://faysal-sarker.netlify.app"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-primary hover:text-primary-hover font-medium transition-colors"
+                >
+                  Faysal Sarker
+                </a>
+              </p>
+              <p className="text-xs text-muted-foreground mt-1">
+                v2.0.0
+              </p>
             </div>
-          </div>
-        ) : (
-          <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center mx-auto">
-            <Code className="h-5 w-5 text-primary-foreground" />
-          </div>
-        )}
-      </div>
-
-      <SidebarContent>
-        <SidebarGroup>
-          <SidebarGroupLabel>Main Menu</SidebarGroupLabel>
-          <SidebarGroupContent>
-            {renderMenuItems(mainMenuItems)}
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        <SidebarGroup>
-          <SidebarGroupLabel>Content</SidebarGroupLabel>
-          <SidebarGroupContent>
-            {renderMenuItems(contentItems)}
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        <SidebarGroup>
-          <SidebarGroupLabel>System</SidebarGroupLabel>
-          <SidebarGroupContent>
-            {renderMenuItems(systemItems)}
-          </SidebarGroupContent>
-        </SidebarGroup>
+          ) : (
+            <div className="flex justify-center">
+              <a
+                href="https://faysal-sarker.netlify.app"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-8 h-8 bg-gradient-to-br from-primary to-primary-hover rounded-lg flex items-center justify-center hover:shadow-lg transition-all duration-200 hover:scale-105"
+              >
+                <User className="w-4 h-4 text-white" />
+              </a>
+            </div>
+          )}
+        </SidebarFooter>
       </SidebarContent>
-
-      <SidebarFooter className="p-4 border-t border-sidebar-border">
-        {state !== "collapsed" && (
-          <div className="flex items-center gap-3">
-            <div className="h-9 w-9 rounded-full bg-sidebar-accent flex items-center justify-center">
-              <Users className="h-4 w-4 text-sidebar-accent-foreground" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-sidebar-foreground truncate">Admin User</p>
-              <p className="text-xs text-sidebar-foreground/60 truncate">admin@example.com</p>
-            </div>
-          </div>
-        )}
-      </SidebarFooter>
     </Sidebar>
   );
 }

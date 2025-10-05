@@ -9,11 +9,11 @@ import {
 
 
 export const navItems = [
-  { label: "Start", href: "/" },
-  { label: "DeFi Network", href: "/defi" },
-  { label: "Crypto Labs", href: "/labs" },
-  { label: "Marketplace", href: "/marketplace" },
-  { label: "Exchange", href: "/exchange" },
+  { label: "Home", href: "#home" },
+  { label: "Skills", href: "#skill" },
+  { label: "About", href: "#about" },
+  { label: "Blogs", href: "#blog" },
+  { label: "Projects", href: "#project" },
 ]
 
 export const services = [

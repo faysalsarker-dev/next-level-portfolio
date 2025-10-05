@@ -11,7 +11,6 @@ import {
 } from "lucide-react";
 import {
   Card,
-  CardContent,
   CardFooter,
   CardHeader,
   CardTitle,
@@ -25,52 +24,48 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
-import Link from "next/link";
+import { IProject } from "@/interfaces";
 
-interface ProjectCardProps {
-  id: string;
-  title: string;
-  description: string;
-  tags: string[];
-  image?: string;
-  github?: string;
-  demo?: string;
-  features: string[];
-}
-
-const ProjectCard = ({
-  id,
-  title,
-  description,
-  tags,
-  image,
-  github,
-  demo,
-  features,
-}: ProjectCardProps) => {
+const ProjectCard = ({ project }: { project: IProject }) => {
   const [tab, setTab] = useState("overview");
+
+  const {
+    _id,
+    title,
+    thumbnail,
+    description,
+    features = [],
+    technologies = [],
+    githubLink,
+    liveSite,
+  } = project;
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 40 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      transition={{ duration: 0.5, ease: "easeOut" }}
-      whileHover={{ scale: 1.02 }}
-      className="w-full"
+      transition={{ duration: 0.6, ease: "easeOut" }}
+      whileHover={{ scale: 1.015 }}
+      className="relative group w-full"
     >
-      <Card className="group overflow-hidden border border-white/10 backdrop-blur-xl bg-gradient-to-br from-background/60 to-background/30 hover:from-background/40 hover:to-background/10 shadow-lg hover:shadow-2xl hover:shadow-primary/20 transition-all duration-500 flex flex-col md:flex-row rounded-2xl relative">
-        {/* Subtle glow ring */}
-        <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-r from-primary/20 via-purple-500/10 to-transparent blur-xl" />
+      {/* Outer Glow Animation */}
+      <div className="absolute -inset-[1px] rounded-2xl bg-gradient-to-r from-primary/30 via-purple-500/20 to-transparent opacity-0 group-hover:opacity-100 blur-xl transition-all duration-700" />
+
+      <Card className="relative overflow-hidden border border-white/10 backdrop-blur-xl bg-gradient-to-br from-background/70 to-background/30 shadow-lg hover:shadow-2xl hover:shadow-primary/20 transition-all duration-500 flex flex-col md:flex-row rounded-2xl z-10">
+        {/* Neon border shimmer */}
+        <div className="absolute inset-0 rounded-2xl before:absolute before:inset-0 before:rounded-2xl before:bg-gradient-to-r before:from-primary/30 before:to-accent-500/20 before:opacity-0 group-hover:before:opacity-100 before:blur-[50px] before:transition-all before:duration-700" />
 
         {/* Image Section */}
-        <div className="relative w-full md:w-[45%] overflow-hidden rounded-t-2xl md:rounded-l-2xl md:rounded-tr-none">
-          {image ? (
+        <div 
+        className="relative w-full h-56 md:h-auto md:w-[45%] overflow-hidden rounded-t-2xl md:rounded-l-2xl md:rounded-tr-none"
+        >
+          {thumbnail ? (
             <Image
-              src={image}
+              src={thumbnail}
               alt={title}
               fill
-              className="object-cover group-hover:scale-110 transition-transform duration-700"
+              className="object-cover transition-transform duration-700 group-hover:scale-110 group-hover:rotate-[1deg]"
             />
           ) : (
             <div className="flex items-center justify-center w-full h-full bg-muted">
@@ -79,6 +74,7 @@ const ProjectCard = ({
               </span>
             </div>
           )}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
         </div>
 
         {/* Content Section */}
@@ -89,12 +85,8 @@ const ProjectCard = ({
             </CardTitle>
           </CardHeader>
 
-          <Tabs
-            defaultValue="overview"
-            value={tab}
-            onValueChange={setTab}
-            className="w-full"
-          >
+          {/* Tabs */}
+          <Tabs value={tab} onValueChange={setTab} className="w-full">
             <TabsList className="grid grid-cols-3 w-full mb-5 bg-white/5 backdrop-blur-md rounded-full p-1 border border-white/10">
               <TabsTrigger
                 value="overview"
@@ -118,44 +110,61 @@ const ProjectCard = ({
 
             {/* About Tab */}
             <TabsContent value="overview">
-              <p className="text-sm md:text-base text-muted-foreground/90 leading-relaxed">
+              <motion.p
+                key={tab}
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, ease: "easeOut" }}
+                className="text-sm md:text-base text-gray-300 leading-relaxed"
+              >
                 {description}
-              </p>
+              </motion.p>
             </TabsContent>
 
             {/* Tech Tab */}
             <TabsContent value="tech">
-              <div className="flex flex-wrap gap-2 mt-2">
-                {tags.map((tag) => (
-                  <Badge
-                    key={tag}
-                    variant="outline"
-                    className="text-xs px-3 py-1 bg-gradient-to-r from-primary/20 to-purple-400/20 border-primary/30 text-white"
-                  >
-                    {tag}
-                  </Badge>
-                ))}
-              </div>
-             
+              <motion.div
+                key={tab}
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, ease: "easeOut" }}
+                className="flex flex-wrap gap-2 mt-2"
+              >
+                {technologies.length > 0 ? (
+                  technologies.map((tech) => (
+                    <Badge
+                      key={tech}
+                      variant="outline"
+                      className="text-xs px-3 py-1 bg-gradient-to-r from-primary/20 to-purple-400/20 border-primary/30 text-white hover:scale-105 hover:from-primary/30 hover:to-purple-400/30 transition-all duration-300"
+                    >
+                      {tech}
+                    </Badge>
+                  ))
+                ) : (
+                  <p className="italic text-muted-foreground text-sm">
+                    No technologies listed.
+                  </p>
+                )}
+              </motion.div>
             </TabsContent>
 
             {/* Features Tab */}
-            <TabsContent value="features" className="flex flex-wrap">
+            <TabsContent value="features">
               {features.length > 0 ? (
-                <ul className="space-y-2 text-sm md:text-base text-muted-foreground/90">
+                <motion.ul
+                  key={tab}
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4, ease: "easeOut" }}
+                  className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2 text-sm md:text-base text-gray-300"
+                >
                   {features.map((feature, i) => (
-                    <motion.li
-                      key={i}
-                      initial={{ opacity: 0, x: -10 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      transition={{ delay: i * 0.05 }}
-                      className="flex items-start gap-2"
-                    >
+                    <li key={i} className="flex items-start gap-2">
                       <span className="text-primary mt-0.5">✦</span>
                       <span>{feature}</span>
-                    </motion.li>
+                    </li>
                   ))}
-                </ul>
+                </motion.ul>
               ) : (
                 <p className="italic text-muted-foreground text-sm">
                   No features listed.
@@ -164,33 +173,36 @@ const ProjectCard = ({
             </TabsContent>
           </Tabs>
 
+          {/* Footer */}
           <CardFooter className="p-0 mt-6">
-        <div className="flex gap-2 mt-4">
-                {github && (
-                  <Button
-                    asChild
-                    variant="outline"
-                    size="sm"
-                    className="bg-white/5 border-white/10 hover:bg-white/10 text-white"
-                  >
-                    <a href={github} target="_blank" rel="noopener noreferrer">
-                      <Github className="w-4 h-4 mr-1" /> GitHub
-                    </a>
-                  </Button>
-                )}
-                {demo && (
-                  <Button
-                    asChild
-                    variant="outline"
-                    size="sm"
-                    className="bg-white/5 border-white/10 hover:bg-white/10 text-white"
-                  >
-                    <a href={demo} target="_blank" rel="noopener noreferrer">
-                      <ExternalLink className="w-4 h-4 mr-1" /> Live Demo
-                    </a>
-                  </Button>
-                )}
-              </div>
+            <div className="flex gap-3">
+              {githubLink && (
+                <Button
+                  asChild
+                  variant="outline"
+                  size="sm"
+                  className="relative overflow-hidden bg-white/5 border-white/10 text-white rounded-full hover:scale-105 transition-all group"
+                >
+                  <a href={githubLink} target="_blank" rel="noopener noreferrer">
+                    <Github className="w-4 h-4 mr-1 group-hover:rotate-12 transition-transform" />{" "}
+                    GitHub
+                  </a>
+                </Button>
+              )}
+              {liveSite && (
+                <Button
+                  asChild
+                  variant="outline"
+                  size="sm"
+                  className="relative overflow-hidden bg-white/5 border-white/10 text-white rounded-full hover:scale-105 transition-all group"
+                >
+                  <a href={liveSite} target="_blank" rel="noopener noreferrer">
+                    <ExternalLink className="w-4 h-4 mr-1 group-hover:translate-x-1 transition-transform" />{" "}
+                    Live Demo
+                  </a>
+                </Button>
+              )}
+            </div>
           </CardFooter>
         </div>
       </Card>

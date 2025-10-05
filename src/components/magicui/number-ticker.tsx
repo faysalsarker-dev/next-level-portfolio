@@ -4,6 +4,14 @@ import { useEffect, useRef } from "react";
 
 import { cn } from "@/lib/utils";
 
+type NumberTickerProps = {
+  value: number;
+  direction?: "up" | "down";
+  delay?: number;
+  className?: string;
+  decimalPlaces?: number;
+};
+
 export function NumberTicker({
   value,
   direction = "up",
@@ -11,8 +19,8 @@ export function NumberTicker({
   className,
   decimalPlaces = 0,
   ...props
-}) {
-  const ref = useRef(null);
+}: NumberTickerProps) {
+  const ref = useRef<HTMLSpanElement | null>(null);
   const motionValue = useMotionValue(direction === "down" ? value : 0);
   const springValue = useSpring(motionValue, {
     damping: 60,
@@ -21,10 +29,11 @@ export function NumberTicker({
   const isInView = useInView(ref, { once: true, margin: "0px" });
 
   useEffect(() => {
-    isInView &&
+    if (isInView) {
       setTimeout(() => {
         motionValue.set(direction === "down" ? 0 : value);
       }, delay * 1000);
+    }
   }, [motionValue, isInView, delay, value, direction]);
 
   useEffect(() =>
@@ -38,12 +47,16 @@ export function NumberTicker({
     }), [springValue, decimalPlaces]);
 
   return (
-    (<span
+    <span
       ref={ref}
       className={cn(
-        "inline-block tabular-nums tracking-wider text-white",
+        "inline-block",
+        "tabular-nums",
+        "tracking-wider",
+        "text-white",
         className
       )}
-      {...props} />)
+      {...props}
+    />
   );
 }
