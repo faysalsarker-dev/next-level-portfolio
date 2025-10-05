@@ -58,8 +58,21 @@ export const RichTextEditor = ({ value, onChange }: RichTextEditorProps) => {
       CodeHighlightNode,
       LinkNode,
     ],
-  };
 
+    editorState: value
+      ? () => {
+          try {
+            return JSON.parse(value);
+          } catch (e) {
+            console.warn("Invalid editor JSON:", e);
+            return null;
+          }
+        }
+      : undefined,
+  
+
+  };
+console.log(value);
   const handleChange = (editorState: EditorState) => {
     editorState.read(() => {
       const json = JSON.stringify(editorState.toJSON());
@@ -69,7 +82,7 @@ export const RichTextEditor = ({ value, onChange }: RichTextEditorProps) => {
 
   return (
     <LexicalComposer initialConfig={initialConfig}>
-      <div className="border border-border rounded-lg overflow-hidden bg-card">
+      <div className="border border-border rounded-lg overflow-hidden bg-popover">
         <ToolbarPlugin />
         <div className="relative">
           <RichTextPlugin

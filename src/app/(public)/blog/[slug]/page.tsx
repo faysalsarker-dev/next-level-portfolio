@@ -1,11 +1,10 @@
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Image from "next/image";
-import { Calendar, Clock, ArrowLeft, Eye, Tag } from "lucide-react";
+import { Calendar, Clock, Eye, Tag } from "lucide-react";
 import { fetchWithTag } from "@/lib/fetchWithTag";
 import { IBlog } from "@/interfaces";
 import { LexicalRenderer } from '@/components/shared/editor/LexicalRenderer';
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
 import { Card } from "@/components/ui/card";
@@ -14,7 +13,6 @@ import BackButton from "@/components/shared/BackButton";
 
 
 
-// 🧩 Pre-render blog paths
 export async function generateStaticParams() {
   try {
     const url = `/blogs`;
@@ -83,7 +81,6 @@ export default async function BlogDetailsPage({ params }: BlogDetailsProps) {
 
   return (
     <article className="min-h-screen bg-background">
-      {/* Hero Section */}
       <section className="relative pt-24 pb-12 px-4 overflow-hidden">
      
 <div className="absolute inset-0 -z-10 overflow-hidden"> <div className="absolute top-20 left-10 w-80 h-80 bg-primary/10 rounded-full blur-3xl" /> <div className="absolute bottom-10 right-10 w-80 h-80 bg-secondary/10 rounded-full blur-3xl" /> </div>

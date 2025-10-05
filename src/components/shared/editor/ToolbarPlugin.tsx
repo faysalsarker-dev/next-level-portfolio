@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { $getSelection, $isRangeSelection, FORMAT_TEXT_COMMAND, FORMAT_ELEMENT_COMMAND } from "lexical";
 import { $setBlocksType } from "@lexical/selection";
@@ -57,7 +58,7 @@ export const ToolbarPlugin = () => {
   };
 
   return (
-    <div className="flex flex-wrap items-center gap-1 p-2 border-b border-border bg-muted/30">
+    <div className="flex flex-wrap items-center gap-1 p-2 border-b border-border bg-background">
       {/* History */}
       <Button
         type="button"

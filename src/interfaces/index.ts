@@ -2,10 +2,9 @@
 export interface IBlog {
   _id?: string;
   title: string;
-  slug: string;
   content: string;
   thumbnail?: string;
-  tags?: string[];
+  tags: string[];
   categories?: string[];
   status?: "draft" | "published";
   meta?: {
@@ -13,11 +12,13 @@ export interface IBlog {
     readTime?: number;
     seoTitle?: string;
     seoDescription?: string;
-    seoKeywords?: string[];
+    seoKeywords: string[];
   };
   createdAt?: Date;
   updatedAt?: Date;
 }
+
+
 
 
 

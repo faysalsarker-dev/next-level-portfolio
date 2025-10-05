@@ -49,20 +49,25 @@ export const BlogForm = ({ blog, onCancel }: BlogFormProps) => {
       meta: blog?.meta || {
         seoTitle: "",
         seoDescription: "",
+        readTime:0,
         seoKeywords: [""],
       },
     },
   });
 
-  const { fields: tagFields, append: addTag, remove: removeTag } = useFieldArray({
-    control,
-    name: "tags",
-  });
-  
-  const { fields: keywordFields, append: addKeyword, remove: removeKeyword } = useFieldArray({
-    control,
-    name: "meta.seoKeywords",
-  });
+const { fields: tagFields, append: addTag, remove: removeTag } = useFieldArray({
+  control,
+  name: "tags" as never, 
+});
+
+
+
+const { fields: keywordFields, append: addKeyword, remove: removeKeyword } = useFieldArray({
+  control,
+  name: "meta.seoKeywords" as never, 
+});
+
+
 
   const onSubmit = async (data: IBlog) => {
     try {
@@ -79,17 +84,17 @@ export const BlogForm = ({ blog, onCancel }: BlogFormProps) => {
         meta: {
           seoTitle: data.meta?.seoTitle || "",
           seoDescription: data.meta?.seoDescription || "",
+          readTime: data.meta?.readTime || 0,
           seoKeywords: data.meta?.seoKeywords?.filter(k => k && k.trim() !== "") || [],
         },
       };
 
       const method = blog ? "PUT" : "POST";
       const url = blog
-        ? `${process.env.NEXT_PUBLIC_API_URL}/blog/${blog._id}`
-        : `${process.env.NEXT_PUBLIC_API_URL}/blog`;
+        ? `/blog/${blog._id}`
+        : `/blog`;
 
-      // Send as JSON instead of FormData
-      const response = await fetchWithTag(url, {
+   await fetchWithTag(url, {
         method,
         data: cleanedData,
         isFormData: false,
@@ -102,7 +107,7 @@ export const BlogForm = ({ blog, onCancel }: BlogFormProps) => {
         duration: 4000,
       });
 
-      onCancel(); // Close form after success
+      onCancel(); 
 
     } catch (error) {
       console.error(error);
@@ -148,7 +153,7 @@ export const BlogForm = ({ blog, onCancel }: BlogFormProps) => {
           render={({ field }) => (
             <ImageUpload
               value={field.value}
-              onChange={(file) => field.onChange(file)}
+              onChange={(url: string) => field.onChange(url)}
               onRemove={() => field.onChange("")}
             />
           )}
@@ -223,7 +228,6 @@ export const BlogForm = ({ blog, onCancel }: BlogFormProps) => {
             <Input 
               placeholder="SEO-friendly title" 
               {...register("meta.seoTitle")}
-              maxLength={60}
             />
           </div>
           <div className="space-y-2">
@@ -231,7 +235,13 @@ export const BlogForm = ({ blog, onCancel }: BlogFormProps) => {
             <Input
               placeholder="SEO-friendly description"
               {...register("meta.seoDescription")}
-              maxLength={160}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label>SEO readTime</Label>
+            <Input
+              placeholder="SEO-friendly readTime"
+              {...register("meta.readTime")}
             />
           </div>
         </div>
@@ -276,7 +286,11 @@ export const BlogForm = ({ blog, onCancel }: BlogFormProps) => {
           control={control}
           rules={{ required: "Content is required" }}
           render={({ field }) => (
-            <RichTextEditor value={field.value} onChange={field.onChange} />
+              <RichTextEditor
+      key={blog?._id || "new"} 
+      value={field.value || ""} 
+      onChange={field.onChange}
+    />
           )}
         />
         {errors.content && (

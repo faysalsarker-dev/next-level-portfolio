@@ -38,9 +38,8 @@ import { useToast } from "@/hooks/use-toast";
 import { IBlog } from "@/interfaces";
 
 export default function Blogs() {
-  const [blogs, setBlogs] = useState<IBlog[]>([]);
+  const [blogs, setBlogs] = useState<IBlog[] | never[]>([]);
   const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState("");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingBlog, setEditingBlog] = useState<IBlog | null>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -55,17 +54,16 @@ export default function Blogs() {
   const fetchBlogs = async () => {
     try {
       setLoading(true);
-      const url = `${process.env.NEXT_PUBLIC_API_URL}/blog`;
-      const response = await fetchWithTag<any>(url, {
+      const url = `/blog`;
+      const response = await fetchWithTag<IBlog>(url, {
         tag: "blogs",
       });
       
-      // Handle nested data structure: response.data.data
-      const blogsData = response?.data?.data || [];
+      const blogsData = Array.isArray(response?.data) ? response.data : [];
       setBlogs(blogsData);
     } catch (error) {
       console.error("Error fetching blogs:", error);
-      setBlogs([]); // Set empty array on error
+      setBlogs([]); 
       toast({
         title: "Error",
         description: "Failed to fetch blogs",
@@ -76,12 +74,6 @@ export default function Blogs() {
     }
   };
 
-  // Filter blogs based on search - with safety check
-  const filteredBlogs = Array.isArray(blogs) 
-    ? blogs.filter((blog) =>
-        blog.title?.toLowerCase().includes(search.toLowerCase())
-      )
-    : [];
 
   // Handle edit
   const handleEdit = (blog: IBlog) => {
@@ -103,7 +95,6 @@ export default function Blogs() {
         description: "The blog post has been deleted successfully.",
       });
 
-      // Refresh blogs list
       fetchBlogs();
     } catch (error) {
       console.error("Error deleting blog:", error);
@@ -124,7 +115,6 @@ export default function Blogs() {
     setDeleteDialogOpen(true);
   };
 
-  // Format date
   const formatDate = (date: string | Date) => {
     return new Date(date).toLocaleDateString("en-US", {
       year: "numeric",
@@ -133,7 +123,6 @@ export default function Blogs() {
     });
   };
 
-  // Handle dialog close and refresh
   const handleDialogClose = () => {
     setIsDialogOpen(false);
     setEditingBlog(null);
@@ -180,33 +169,23 @@ export default function Blogs() {
         </Dialog>
       </div>
 
-      <div className="mb-6">
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input
-            placeholder="Search blogs..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="pl-10"
-          />
-        </div>
-      </div>
+  
 
       {loading ? (
         <div className="flex items-center justify-center py-12">
           <div className="text-muted-foreground">Loading blogs...</div>
         </div>
-      ) : filteredBlogs.length === 0 ? (
+      ) : blogs.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-12 border rounded-lg">
           <p className="text-muted-foreground mb-4">
-            {search ? "No blogs found" : "No blogs yet"}
+            { "No blogs found" }
           </p>
-          {!search && (
+         
             <Button onClick={() => setIsDialogOpen(true)}>
               <Plus className="mr-2 h-4 w-4" />
               Create Your First Blog
             </Button>
-          )}
+         
         </div>
       ) : (
         <div className="border rounded-lg overflow-hidden">
@@ -222,7 +201,7 @@ export default function Blogs() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredBlogs.map((blog) => (
+              {blogs.map((blog:IBlog) => (
                 <TableRow key={blog._id}>
                   <TableCell>
                     {blog.thumbnail ? (
@@ -276,7 +255,8 @@ export default function Blogs() {
                       <Button
                         variant="ghost"
                         size="icon"
-                        onClick={() => confirmDelete(blog._id)}
+                        onClick={() => blog._id && confirmDelete(blog._id)}
+                        disabled={!blog._id}
                       >
                         <Trash2 className="h-4 w-4 text-destructive" />
                       </Button>

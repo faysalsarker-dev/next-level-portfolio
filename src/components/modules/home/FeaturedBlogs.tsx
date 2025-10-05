@@ -6,9 +6,11 @@ import { fetchWithTag } from "@/lib/fetchWithTag";
 const FeaturedBlogs = async () => {
   try {
     const url = `/blog`;
-    const blogs = await fetchWithTag(url, { tag: "blogs" });
+    const result = await fetchWithTag<IBlog>(url, { tag: "blogs" });
 
-    if (!blogs || blogs?.data?.data?.length === 0) {
+const blogs = result?.data
+
+    if (!blogs) {
       return (
         <section className="relative py-16 px-4 text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-4 text-white">
@@ -28,7 +30,7 @@ const FeaturedBlogs = async () => {
 
         {/* Blog Cards Grid */}
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-          {blogs?.data?.data?.map((blog: IBlog, i: number) => (
+          {blogs?.map((blog: IBlog, i: number) => (
             <BlogCard key={blog._id || i} blog={blog} />
           ))}
         </div>
