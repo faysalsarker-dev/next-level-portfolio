@@ -31,6 +31,7 @@ export async function fetchWithTag<T>(
     method,
     next: tag ? { tags: [tag] } : undefined,
     credentials: "include",
+ 
     headers: isFormData
       ? headers
       : {
@@ -52,6 +53,5 @@ export async function fetchWithTag<T>(
   }
 
   const json: ResponsePayload<T> = await res.json();
-  console.log(json);
   return json;
 }

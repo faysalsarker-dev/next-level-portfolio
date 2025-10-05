@@ -1,4 +1,5 @@
-"use client"
+"use client";
+
 import {
   Sidebar,
   SidebarContent,
@@ -15,56 +16,47 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
-import { User } from "lucide-react";
+import { LayoutDashboard, BookOpen, FolderKanban, User } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
 const routes = [
-
-  { name: "Dashboard", path: "/dashboard", icon: User },
-  { name: "Blogs", path: "/dashboard/blogs", icon: User },
-  { name: "Projects", path: "/dashboard/projects", icon: User },
-
-]
-
-
+  { name: "Dashboard", path: "/dashboard", icon: LayoutDashboard },
+  { name: "Blogs", path: "/dashboard/blogs", icon: BookOpen },
+  { name: "Projects", path: "/dashboard/projects", icon: FolderKanban },
+];
 
 export function AppSidebar() {
   const location = usePathname();
   const { open } = useSidebar();
 
   return (
-    <Sidebar 
-      collapsible="icon" 
-      className="border-r border-sidebar-border bg-sidebar-bg transition-all duration-300"
+    <Sidebar
+      collapsible="icon"
+      className="bg-[#151523] border-r border-gray-800 text-white"
     >
       <SidebarContent className="flex flex-col h-full">
         {/* Header */}
-        <SidebarHeader className="border-b border-sidebar-border p-4">
+        <SidebarHeader className="p-4 border-b border-gray-800">
           <div className="flex items-center gap-3">
-            <div className="flex-shrink-0">
-              <Image 
-                src='/public/faysalsarker.png' 
-                alt="EduDashboard Logo" 
+            <div className="relative w-10 h-10">
+              <Image
+                src="/faysalsarker.png"
+                alt="EduDashboard Logo"
                 fill
-                className="w-10 h-10 rounded-xl object-cover shadow-lg ring-2 ring-primary/20"
+                className="object-cover rounded-xl shadow-lg ring-2 ring-primary/20"
               />
             </div>
-
             {open && (
-              <div className="text-left leading-tight animate-fade-in">
-                <h1 className="font-bold text-lg text-foreground">
-                  EduDashboard
-                </h1>
-                <p className="text-xs text-muted-foreground">
-                  Admin Portal
-                </p>
+              <div className="text-left">
+                <h1 className="font-bold text-lg">Faysal Sarker</h1>
+                <p className="text-xs text-gray-400">Admin Portal</p>
               </div>
             )}
           </div>
         </SidebarHeader>
 
-        {/* Navigation Menu */}
+        {/* Navigation */}
         <div className="flex-1 overflow-hidden">
           <ScrollArea className="h-full py-4">
             <SidebarGroup>
@@ -76,40 +68,16 @@ export function AppSidebar() {
                       <SidebarMenuItem key={item.name}>
                         <SidebarMenuButton
                           size="lg"
-                          className={cn(
-                            "group relative w-full transition-all duration-200 hover-lift",
-                            "hover:bg-sidebar-hover hover:shadow-md",
-                            isActive && [
-                              "bg-primary/20 border border-primary/30",
-                              "text-primary font-semibold shadow-md",
-                              "route-indicator active"
-                            ]
-                          )}
                           asChild
+                          className={cn(
+                            "group w-full transition-all duration-200",
+                            "hover:bg-primary/10 hover:text-primary",
+                            isActive && "bg-primary/20 text-primary font-semibold"
+                          )}
                         >
                           <Link href={item.path} className="flex items-center gap-3">
-                            <item.icon
-                              className={cn(
-                                "w-5 h-5 transition-colors",
-                                isActive ? "text-primary" : "text-muted-foreground group-hover:text-foreground"
-                              )}
-                            />
-                            {open && (
-                              <span className="font-medium">
-                                {item.name}
-                              </span>
-                            )}
-                            {/* Notification badges for specific routes */}
-                            {open && item.name === "Messages" && (
-                              <Badge variant="destructive" className="ml-auto h-5 w-5 flex items-center justify-center text-xs p-0">
-                                3
-                              </Badge>
-                            )}
-                            {open && item.name === "Students" && (
-                              <Badge variant="secondary" className="ml-auto h-5 px-2 text-xs">
-                                142
-                              </Badge>
-                            )}
+                            <item.icon className="w-5 h-5" />
+                            {open && <span>{item.name}</span>}
                           </Link>
                         </SidebarMenuButton>
                       </SidebarMenuItem>
@@ -122,34 +90,29 @@ export function AppSidebar() {
         </div>
 
         {/* Footer */}
-        <SidebarFooter className="border-t border-sidebar-border p-4 mt-auto">
+        <SidebarFooter className="border-t border-gray-800 p-4 mt-auto">
           {open ? (
-            <div className="text-center animate-fade-in">
-              <p className="text-xs text-muted-foreground">
-                Built with 💙 by{" "}
-                <a
-                  href="https://faysal-sarker.netlify.app"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-primary hover:text-primary-hover font-medium transition-colors"
-                >
-                  Faysal Sarker
-                </a>
-              </p>
-              <p className="text-xs text-muted-foreground mt-1">
-                v2.0.0
-              </p>
-            </div>
-          ) : (
-            <div className="flex justify-center">
+            <div className="text-center text-xs text-gray-400">
+              Built with 💙 by{" "}
               <a
                 href="https://faysal-sarker.netlify.app"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-8 h-8 bg-gradient-to-br from-primary to-primary-hover rounded-lg flex items-center justify-center hover:shadow-lg transition-all duration-200 hover:scale-105"
+                className="text-primary hover:text-primary/80"
+              >
+                Faysal Sarker
+              </a>
+              <p className="mt-1">v2.0.0</p>
+            </div>
+          ) : (
+            <div className="flex justify-center">
+              <Link
+                href="https://faysal-sarker.netlify.app"
+                target="_blank"
+                className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center"
               >
                 <User className="w-4 h-4 text-white" />
-              </a>
+              </Link>
             </div>
           )}
         </SidebarFooter>

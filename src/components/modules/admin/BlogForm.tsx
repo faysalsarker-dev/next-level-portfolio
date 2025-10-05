@@ -30,7 +30,8 @@ interface BlogFormProps {
 }
 
 export const BlogForm = ({ blog, onCancel }: BlogFormProps) => {
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [thumbnail, setThumbnail] = useState<File | null>(null);
   const { toast } = useToast();
 
   const {
@@ -45,7 +46,6 @@ export const BlogForm = ({ blog, onCancel }: BlogFormProps) => {
       tags: blog?.tags || [""],
       content: blog?.content || "",
       status: blog?.status || "draft",
-      thumbnail: blog?.thumbnail || "",
       meta: blog?.meta || {
         seoTitle: "",
         seoDescription: "",
@@ -68,58 +68,65 @@ const { fields: keywordFields, append: addKeyword, remove: removeKeyword } = use
 });
 
 
+const onSubmit = async (data: IBlog) => {
+  try {
+    setLoading(true);
 
-  const onSubmit = async (data: IBlog) => {
-    try {
-      setLoading(true);
+    const formData = new FormData();
 
-      // Clean and filter data
-      const cleanedData = {
-        title: data.title,
-        content: data.content,
-        thumbnail: data.thumbnail || "",
-        categories: data.categories?.filter(c => c && c.trim() !== "") || [],
-        tags: data.tags?.filter(t => t && t.trim() !== "") || [],
-        status: data.status,
-        meta: {
-          seoTitle: data.meta?.seoTitle || "",
-          seoDescription: data.meta?.seoDescription || "",
-          readTime: data.meta?.readTime || 0,
-          seoKeywords: data.meta?.seoKeywords?.filter(k => k && k.trim() !== "") || [],
-        },
-      };
+    // Basic fields
+    formData.append("title", data.title);
+    formData.append("content", data.content);
+    formData.append("status", data.status ?? "draft");
 
-      const method = blog ? "PUT" : "POST";
-      const url = blog
-        ? `/blog/${blog._id}`
-        : `/blog`;
-
-   await fetchWithTag(url, {
-        method,
-        data: cleanedData,
-        isFormData: false,
-        tag: "blogs",
-      });
-
-      toast({
-        title: blog ? "Blog Updated" : "Blog Posted",
-        description: `Your blog has been ${blog ? "updated" : "posted"} successfully.`,
-        duration: 4000,
-      });
-
-      onCancel(); 
-
-    } catch (error) {
-      console.error(error);
-      toast({
-        title: "Error",
-        description: "There was an error saving your blog. Please try again.",
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false);
+    // Append thumbnail if it exists and is a File
+    if (thumbnail instanceof File) {
+      formData.append("file", thumbnail);
     }
-  };
+
+    // Append categories and tags as JSON strings
+    formData.append("categories", JSON.stringify(data.categories?.filter(c => c && c.trim() !== "") || []));
+    formData.append("tags", JSON.stringify(data.tags?.filter(t => t && t.trim() !== "") || []));
+
+    // Append meta object as JSON string
+    const metaData = {
+      seoTitle: data.meta?.seoTitle || "",
+      seoDescription: data.meta?.seoDescription || "",
+      readTime: data.meta?.readTime || 0,
+      seoKeywords: data.meta?.seoKeywords?.filter(k => k && k.trim() !== "") || [],
+    };
+    formData.append("meta", JSON.stringify(metaData));
+
+    const method = blog ? "PUT" : "POST";
+    const url = blog ? `/blog/${blog._id}` : `/blog`;
+
+    await fetchWithTag(url, {
+      method,
+      data: formData,
+      isFormData: true, 
+      tag: "blogs",
+    });
+
+    toast({
+      title: blog ? "Blog Updated" : "Blog Posted",
+      description: `Your blog has been ${blog ? "updated" : "posted"} successfully.`,
+      duration: 4000,
+    });
+
+    onCancel();
+  } catch (error) {
+    console.error(error);
+    toast({
+      title: "Error",
+      description: "There was an error saving your blog. Please try again.",
+      variant: "destructive",
+    });
+  } finally {
+    setLoading(false);
+  }
+};
+
+ 
 
   return (
     <motion.form
@@ -147,17 +154,14 @@ const { fields: keywordFields, append: addKeyword, remove: removeKeyword } = use
       {/* Thumbnail */}
       <div className="space-y-2">
         <Label>Thumbnail</Label>
-        <Controller
-          name="thumbnail"
-          control={control}
-          render={({ field }) => (
+        
             <ImageUpload
-              value={field.value}
-              onChange={(url: string) => field.onChange(url)}
-              onRemove={() => field.onChange("")}
+              onChange={setThumbnail}
+              onRemove={() => setThumbnail(null)}
+              initial={blog?.thumbnail}
             />
-          )}
-        />
+          
+       
       </div>
 
       {/* Categories */}

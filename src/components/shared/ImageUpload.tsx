@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import { useState, useRef } from "react";
 import { Upload, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -5,22 +6,24 @@ import { Card } from "@/components/ui/card";
 
 interface ImageUploadProps {
   value?: string;
-  onChange: (url: string) => void;
+  onChange: (file: File | null) => void;
   onRemove: () => void;
+  initial?:string
 }
 
-export const ImageUpload = ({ value, onChange, onRemove }: ImageUploadProps) => {
+export const ImageUpload = ({ value, onChange, onRemove,initial }: ImageUploadProps) => {
   const [preview, setPreview] = useState<string | undefined>(value);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+
       const reader = new FileReader();
       reader.onloadend = () => {
         const result = reader.result as string;
         setPreview(result);
-        onChange(result);
+        onChange(file);
       };
       reader.readAsDataURL(file);
     }
@@ -71,6 +74,18 @@ export const ImageUpload = ({ value, onChange, onRemove }: ImageUploadProps) => 
           </Button>
         </div>
       )}
+
+{
+  initial && (
+   <img
+            src={initial}
+            alt="Preview"
+            className="w-full h-32 object-cover rounded-lg border border-border"
+          />
+
+  )
+}
+
     </div>
   );
 };

@@ -84,7 +84,7 @@ export default function Blogs() {
   // Handle delete
   const handleDelete = async (id: string) => {
     try {
-      const url = `${process.env.NEXT_PUBLIC_API_URL}/blog/${id}`;
+      const url = `/blog/${id}`;
       await fetchWithTag(url, {
         method: "DELETE",
         tag: "blogs",

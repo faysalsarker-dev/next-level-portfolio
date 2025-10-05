@@ -20,7 +20,9 @@ interface ProjectFormProps {
 }
 
 export const ProjectForm = ({ project, onCancel }: ProjectFormProps) => {
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
+    const [thumbnail, setThumbnail] = useState<File | null>(null);
+
   const { toast } = useToast();
 
   const {
@@ -41,253 +43,244 @@ export const ProjectForm = ({ project, onCancel }: ProjectFormProps) => {
     },
   });
 
-  const { fields: featureFields, append: appendFeature, remove: removeFeature } = useFieldArray({
-    control,
-    name: "features",
-  });
+  const { fields: featureFields, append: appendFeature, remove: removeFeature } =
+    useFieldArray({ control, name: "features" as never });
 
-  const { fields: techFields, append: appendTech, remove: removeTech } = useFieldArray({
-    control,
-    name: "technologies",
-  });
+  const { fields: techFields, append: appendTech, remove: removeTech } =
+    useFieldArray({ control, name: "technologies" as never });
 
-  const onSubmit = async (data: IProject) => {
-    try {
-      setLoading(true);
+const onSubmit = async (data: IProject) => {
+  try {
+    setLoading(true);
 
-      const cleanedData = {
-        title: data.title.trim(),
-        thumbnail: data.thumbnail,
-        description: data.description.trim(),
-        features: data.features.filter(f => f && f.trim() !== ""),
-        technologies: data.technologies.filter(t => t && t.trim() !== ""),
-        githubLink: data.githubLink.trim(),
-        liveSite: data.liveSite.trim(),
-        status: data.status,
-      };
+    // Create FormData to handle file uploads
+    const formData = new FormData();
+    formData.append("title", data.title.trim());
+    formData.append("description", data.description.trim());
+    formData.append("githubLink", data.githubLink?.trim() || "");
+    formData.append("liveSite", data.liveSite?.trim() || "");
+    formData.append("status", data.status);
 
-      const method = project ? "PUT" : "POST";
-      const url = project
-        ? `${process.env.NEXT_PUBLIC_API_URL}/project/${project._id}`
-        : `${process.env.NEXT_PUBLIC_API_URL}/project`;
+    // Append features and technologies as JSON strings
+    formData.append("features", JSON.stringify(data.features.filter(f => f.trim() !== "")));
+    formData.append("technologies", JSON.stringify(data.technologies.filter(t => t.trim() !== "")));
 
-      await fetchWithTag(url, {
-        method,
-        data: cleanedData,
-        isFormData: false,
-        tag: "projects",
-      });
-
-      toast({
-        title: project ? "Project Updated" : "Project Created",
-        description: `Your project has been ${project ? "updated" : "created"} successfully.`,
-        duration: 4000,
-      });
-
-      onCancel();
-
-    } catch (error) {
-      console.error(error);
-      toast({
-        title: "Error",
-        description: "There was an error saving your project. Please try again.",
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false);
+    // Append the image file if exists
+    if (thumbnail) {
+      formData.append("file", thumbnail);
     }
-  };
+
+    const method = project ? "PUT" : "POST";
+    const url = project ? `/project/${project._id}` : `/project`;
+
+    await fetchWithTag(url, {
+      method,
+      data: formData,
+      isFormData: true, // important to tell fetchWithTag it's FormData
+      tag: "projects",
+    });
+
+    toast({
+      title: project ? "Project Updated" : "Project Created",
+      description: `Your project has been ${project ? "updated" : "created"} successfully.`,
+      duration: 4000,
+    });
+
+    onCancel();
+  } catch (error) {
+    console.error(error);
+    toast({
+      title: "Error",
+      description: "There was an error saving your project. Please try again.",
+      variant: "destructive",
+    });
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <motion.form
       onSubmit={handleSubmit(onSubmit)}
-      className="space-y-8 p-6 bg-card rounded-2xl shadow-lg border border-border max-w-3xl mx-auto"
+      className="space-y-8 p-6 bg-card rounded-2xl shadow-lg border border-border w-full  max-w-3xl mx-auto"
       initial={{ opacity: 0, y: 40 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, ease: "easeOut" }}
     >
-      <h2 className="text-2xl font-semibold text-gray-800">Project Editor</h2>
+      <h2 className="text-3xl font-bold text-center sm:text-left text-primary">
+        {project ? "Edit Project" : "Create New Project"}
+      </h2>
 
-      {/* Title */}
-      <div className="space-y-2">
-        <Label htmlFor="title">Project Title</Label>
-        <Input
-          id="title"
-          placeholder="Enter project title..."
-          {...register("title", { required: "Title is required" })}
-        />
-        {errors.title && (
-          <p className="text-sm text-red-500">{errors.title.message}</p>
-        )}
-      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        {/* Title */}
+        <div className="col-span-1 sm:col-span-2 space-y-2">
+          <Label htmlFor="title">Project Title</Label>
+          <Input
+            id="title"
+            placeholder="Enter project title..."
+            {...register("title", { required: "Title is required" })}
+          />
+          {errors.title && <p className="text-sm text-red-500">{errors.title.message}</p>}
+        </div>
 
-      {/* Thumbnail */}
-      <div className="space-y-2">
-        <Label>Thumbnail Image</Label>
-        <Controller
-          name="thumbnail"
-          control={control}
-          rules={{ required: "Thumbnail is required" }}
-          render={({ field }) => (
-            <ImageUpload
-              value={field.value}
-              onChange={(file) => field.onChange(file)}
-              onRemove={() => field.onChange("")}
+        {/* Thumbnail */}
+        <div className="col-span-1 sm:col-span-2 space-y-2">
+          <Label>Thumbnail Image</Label>
+    
+              <ImageUpload
+              onChange={setThumbnail}
+              onRemove={() => setThumbnail(null)}
+              initial={project?.thumbnail}
             />
+        
+          {errors.thumbnail && (
+            <p className="text-sm text-red-500">{errors.thumbnail.message}</p>
           )}
-        />
-        {errors.thumbnail && (
-          <p className="text-sm text-red-500">{errors.thumbnail.message}</p>
-        )}
-      </div>
+        </div>
 
-      {/* Description */}
-      <div className="space-y-2">
-        <Label htmlFor="description">Description</Label>
-        <Controller
-          name="description"
-          control={control}
-          rules={{ required: "Description is required" }}
-          render={({ field }) => (
-            <Textarea
-              id="description"
-              placeholder="Describe your project..."
-              rows={5}
-              {...field}
-            />
+        {/* Description */}
+        <div className="col-span-1 sm:col-span-2 space-y-2">
+          <Label htmlFor="description">Description</Label>
+          <Controller
+            name="description"
+            control={control}
+            rules={{ required: "Description is required" }}
+            render={({ field }) => (
+              <Textarea
+                id="description"
+                placeholder="Describe your project..."
+                rows={5}
+                className="resize-none"
+                {...field}
+              />
+            )}
+          />
+          {errors.description && (
+            <p className="text-sm text-red-500">{errors.description.message}</p>
           )}
-        />
-        {errors.description && (
-          <p className="text-sm text-red-500">{errors.description.message}</p>
-        )}
-      </div>
+        </div>
 
-      {/* Features Field Array */}
-      <div className="space-y-2">
-        <Label>Key Features</Label>
-        <div className="space-y-3">
-          {featureFields.map((field, index) => (
-            <motion.div
-              key={field.id}
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 20 }}
-              className="flex items-start gap-2"
-            >
-              <div className="flex-1">
+        {/* Features */}
+        <div className="col-span-1 sm:col-span-2 space-y-2">
+          <Label>Key Features</Label>
+          <div className="space-y-3">
+            {featureFields.map((field, index) => (
+              <motion.div
+                key={field.id}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                className="flex flex-col sm:flex-row gap-2"
+              >
                 <Input
                   {...register(`features.${index}`)}
                   placeholder={`Feature ${index + 1}`}
+                  className="flex-1"
                 />
-              </div>
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon"
-                onClick={() => removeFeature(index)}
-                disabled={featureFields.length === 1}
-                className="mt-0.5"
-              >
-                <X className="h-4 w-4" />
-              </Button>
-            </motion.div>
-          ))}
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            onClick={() => appendFeature("")}
-            className="w-full"
-          >
-            <Plus className="mr-2 h-4 w-4" />
-            Add Feature
-          </Button>
-        </div>
-      </div>
-
-      {/* Technologies Field Array */}
-      <div className="space-y-2">
-        <Label>Technologies Used</Label>
-        <div className="space-y-3">
-          {techFields.map((field, index) => (
-            <motion.div
-              key={field.id}
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 20 }}
-              className="flex items-start gap-2"
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => removeFeature(index)}
+                  disabled={featureFields.length === 1}
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </motion.div>
+            ))}
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => appendFeature("")}
+              className="w-full"
             >
-              <div className="flex-1">
+              <Plus className="mr-2 h-4 w-4" />
+              Add Feature
+            </Button>
+          </div>
+        </div>
+
+        {/* Technologies */}
+        <div className="col-span-1 sm:col-span-2 space-y-2">
+          <Label>Technologies Used</Label>
+          <div className="space-y-3">
+            {techFields.map((field, index) => (
+              <motion.div
+                key={field.id}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                className="flex flex-col sm:flex-row gap-2"
+              >
                 <Input
                   {...register(`technologies.${index}`)}
-                  placeholder={`e.g., React, Node.js, MongoDB`}
+                  placeholder="e.g., React, Node.js, MongoDB"
+                  className="flex-1"
                 />
-              </div>
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon"
-                onClick={() => removeTech(index)}
-                disabled={techFields.length === 1}
-                className="mt-0.5"
-              >
-                <X className="h-4 w-4" />
-              </Button>
-            </motion.div>
-          ))}
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            onClick={() => appendTech("")}
-            className="w-full"
-          >
-            <Plus className="mr-2 h-4 w-4" />
-            Add Technology
-          </Button>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => removeTech(index)}
+                  disabled={techFields.length === 1}
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </motion.div>
+            ))}
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => appendTech("")}
+              className="w-full"
+            >
+              <Plus className="mr-2 h-4 w-4" />
+              Add Technology
+            </Button>
+          </div>
+        </div>
+
+        {/* Links */}
+        <div className="space-y-2">
+          <Label htmlFor="githubLink">GitHub Repository</Label>
+          <Input
+            id="githubLink"
+            type="url"
+            placeholder="https://github.com/username/repo"
+            {...register("githubLink", {
+              pattern: {
+                value: /^https?:\/\/.+/,
+                message: "Please enter a valid URL",
+              },
+            })}
+          />
+          {errors.githubLink && (
+            <p className="text-sm text-red-500">{errors.githubLink.message}</p>
+          )}
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="liveSite">Live Demo</Label>
+          <Input
+            id="liveSite"
+            type="url"
+            placeholder="https://your-project.com"
+            {...register("liveSite", {
+              pattern: {
+                value: /^https?:\/\/.+/,
+                message: "Please enter a valid URL",
+              },
+            })}
+          />
+          {errors.liveSite && (
+            <p className="text-sm text-red-500">{errors.liveSite.message}</p>
+          )}
         </div>
       </div>
 
-      {/* GitHub Link */}
-      <div className="space-y-2">
-        <Label htmlFor="githubLink">GitHub Repository</Label>
-        <Input
-          id="githubLink"
-          type="url"
-          placeholder="https://github.com/username/repo"
-          {...register("githubLink", {
-            pattern: {
-              value: /^https?:\/\/.+/,
-              message: "Please enter a valid URL",
-            },
-          })}
-        />
-        {errors.githubLink && (
-          <p className="text-sm text-red-500">{errors.githubLink.message}</p>
-        )}
-      </div>
-
-      {/* Live Site */}
-      <div className="space-y-2">
-        <Label htmlFor="liveSite">Live Demo</Label>
-        <Input
-          id="liveSite"
-          type="url"
-          placeholder="https://your-project.com"
-          {...register("liveSite", {
-            pattern: {
-              value: /^https?:\/\/.+/,
-              message: "Please enter a valid URL",
-            },
-          })}
-        />
-        {errors.liveSite && (
-          <p className="text-sm text-red-500">{errors.liveSite.message}</p>
-        )}
-      </div>
-
-      {/* Publish Toggle */}
-      <div className="flex items-center space-x-2 pt-2">
+      {/* Status Switch */}
+      <div className="flex items-center gap-3 pt-4 border-t border-border">
         <Controller
           name="status"
           control={control}
@@ -301,17 +294,14 @@ export const ProjectForm = ({ project, onCancel }: ProjectFormProps) => {
             />
           )}
         />
-        <Label htmlFor="status">Publish immediately</Label>
+        <Label htmlFor="status" className="cursor-pointer">
+          Publish immediately
+        </Label>
       </div>
 
-      {/* Action Buttons */}
-      <div className="flex justify-end gap-3 pt-4 border-t">
-        <Button
-          type="button"
-          variant="outline"
-          onClick={onCancel}
-          disabled={loading}
-        >
+      {/* Actions */}
+      <div className="flex flex-col sm:flex-row justify-end gap-3 pt-6 border-t border-border">
+        <Button type="button" variant="outline" onClick={onCancel} disabled={loading}>
           Cancel
         </Button>
         <Button type="submit" disabled={loading}>

@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { LexicalComposer } from "@lexical/react/LexicalComposer";
 import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
 import { ContentEditable } from "@lexical/react/LexicalContentEditable";
@@ -13,6 +14,7 @@ import { ListPlugin } from "@lexical/react/LexicalListPlugin";
 import { LinkPlugin } from "@lexical/react/LexicalLinkPlugin";
 import { OnChangePlugin } from "@lexical/react/LexicalOnChangePlugin";
 import { EditorState } from "lexical";
+import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { ToolbarPlugin } from "@/components/shared/editor/ToolbarPlugin";
 
 interface RichTextEditorProps {
@@ -44,6 +46,27 @@ const theme = {
   },
 };
 
+// ✅ This plugin sets the initial editor value from props
+function SetInitialContentPlugin({ value }: { value?: string }) {
+  const [editor] = useLexicalComposerContext();
+
+  useEffect(() => {
+    if (!value) return;
+
+    try {
+      const parsed = JSON.parse(value);
+      editor.update(() => {
+        const editorState = editor.parseEditorState(parsed);
+        editor.setEditorState(editorState);
+      });
+    } catch (err) {
+      console.warn("Invalid Lexical JSON:", err);
+    }
+  }, [editor, value]);
+
+  return null;
+}
+
 export const RichTextEditor = ({ value, onChange }: RichTextEditorProps) => {
   const initialConfig = {
     namespace: "BlogEditor",
@@ -58,21 +81,8 @@ export const RichTextEditor = ({ value, onChange }: RichTextEditorProps) => {
       CodeHighlightNode,
       LinkNode,
     ],
-
-    editorState: value
-      ? () => {
-          try {
-            return JSON.parse(value);
-          } catch (e) {
-            console.warn("Invalid editor JSON:", e);
-            return null;
-          }
-        }
-      : undefined,
-  
-
   };
-console.log(value);
+
   const handleChange = (editorState: EditorState) => {
     editorState.read(() => {
       const json = JSON.stringify(editorState.toJSON());
@@ -101,6 +111,8 @@ console.log(value);
         <ListPlugin />
         <LinkPlugin />
         <OnChangePlugin onChange={handleChange} />
+        {/* 👇 This plugin loads your saved content */}
+        <SetInitialContentPlugin value={value} />
       </div>
     </LexicalComposer>
   );
