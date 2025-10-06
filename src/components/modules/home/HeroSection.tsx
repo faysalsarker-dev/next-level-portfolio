@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Image from "next/image";
 import { useGSAP } from "@gsap/react";
+import SkillSlider from "@/components/ui/SkillSlider";
 
 const HeroSection = () => {
   const lineRef = useRef<SVGPathElement>(null);
@@ -91,7 +92,7 @@ const HeroSection = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-16 lg:gap-12 items-center">
           {/* Left Section - Introduction */}
           <motion.div variants={itemVariants} className="text-center lg:text-left space-y-8">
-            <div className="space-y-6">
+            {/* <div className="space-y-6">
               <h1 className="text-4xl md:text-5xl xl:text-6xl font-bold leading-tight">
                 <span className="text-white">Hy! I Am</span>
                 <br />
@@ -106,8 +107,32 @@ const HeroSection = () => {
                   <div>Experience</div>
                 </div>
               </div>
-            </div>
+            </div> */}
+<div className="space-y-4">
+              <p className="text-lg md:text-xl text-muted-foreground font-light">
+                Hi! I Am
+              </p>
+              <h1
+                className="text-5xl md:text-4xl xl:text-5xl font-bold leading-tight text-foreground"
+              >
+                Faysal Sarker
+              </h1>
 
+              <div className="flex items-center justify-center lg:justify-start gap-4 pt-6">
+                <motion.span
+                  className="text-6xl md:text-7xl font-bold text-primary"
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ delay: 1.5, type: "spring", stiffness: 200 }}
+                >
+                  03+
+                </motion.span>
+                <div className="text-left text-sm uppercase tracking-wide text-muted-foreground font-medium">
+                  <div>Years</div>
+                  <div>Experience</div>
+                </div>
+              </div>
+            </div>
             {/* Social Media Icons */}
             <div className="flex gap-4 justify-center lg:justify-start pt-2">
               {socialIcons.map((social, index) => (
@@ -202,32 +227,22 @@ const HeroSection = () => {
               </div>
 
               <div className="flex items-center justify-between">
-                {/* Avatar Stack */}
-                <div className="flex -space-x-4">
-                  {avatarImages.map((img, index) => (
-                    <Avatar
-                      key={index}
-                      className="h-12 w-12 border-[3px] border-[var(--color-surface-2)] hover:z-10 transition-all hover:scale-125 hover:border-[var(--color-primary)] shadow-lg"
-                    >
-                      <AvatarImage src={img} alt={`Reviewer ${index + 1}`} />
-                      <AvatarFallback className="bg-muted">U{index + 1}</AvatarFallback>
-                    </Avatar>
-                  ))}
-                </div>
-
-                {/* Rating */}
-                <div className="text-4xl font-bold bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-secondary)] bg-clip-text text-transparent">
-                  4.9
-                </div>
+           <SkillSlider/>
               </div>
             </motion.div>
 
             {/* Developer Label */}
-            <div className="text-center lg:text-right pt-4">
-              <p className="text-3xl md:text-4xl italic text-white">
-                Full-Stack <span className="font-bold text-accent">Developer.</span>
+           <motion.div
+              className="text-center lg:text-right pt-6"
+              initial={{ opacity: 0, x: 30 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 1.8 }}
+            >
+              <p className="text-3xl md:text-4xl font-light text-foreground italic">
+                Full-Stack{" "}
+                <span className="font-bold text-accent">Developer.</span>
               </p>
-            </div>
+            </motion.div>
           </motion.div>
         </div>
       </motion.div>

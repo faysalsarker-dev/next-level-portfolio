@@ -6,7 +6,7 @@ import { fetchWithTag } from "@/lib/fetchWithTag";
 const FeaturedBlogs = async () => {
   try {
     const url = `/blog`;
-    const result = await fetchWithTag<IBlog | IBlog[]>(url, { tag: "blogs" });
+    const result = await fetchWithTag<IBlog[]>(url, { tag: "blogs" });
 
     const blogs: IBlog[] = result?.data
       ? Array.isArray(result.data)
