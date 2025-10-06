@@ -1,18 +1,19 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import { motion } from "framer-motion";
+import {  useRef } from "react";
+import { easeInOut, motion } from "framer-motion";
 import { gsap } from "gsap";
 import { Facebook, Instagram, Twitter, Linkedin, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import Image from "next/image";
+import { useGSAP } from "@gsap/react";
 
 const HeroSection = () => {
   const lineRef = useRef<SVGPathElement>(null);
 
-  useEffect(() => {
+  useGSAP(() => {
     if (lineRef.current) {
-      // GSAP dashed line animation (looping breathing effect)
       gsap.fromTo(
         lineRef.current,
         { strokeDashoffset: 300 },
@@ -26,7 +27,6 @@ const HeroSection = () => {
       );
     }
 
-    // Floating animation for profile image
     gsap.to(".profile-float", {
       y: -15,
       duration: 3,
@@ -52,15 +52,18 @@ const HeroSection = () => {
     visible: {
       opacity: 1,
       y: 0,
-      transition: { duration: 0.6, ease: "easeOut" },
+       transition: {
+      duration: 0.5,
+      ease: easeInOut
+    }
     },
   };
 
   const socialIcons = [
-    { icon: Facebook, label: "Facebook", color: "#1877F2" },
-    { icon: Instagram, label: "Instagram", color: "#E4405F" },
-    { icon: Twitter, label: "Twitter", color: "#1DA1F2" },
-    { icon: Linkedin, label: "LinkedIn", color: "#0A66C2" },
+    { icon: Facebook, label: "Facebook", color: "#1877F2" , link:"https://www.facebook.com/faysal.sharker.140/" },
+    { icon: Instagram, label: "Instagram", color: "#E4405F", link:"https://www.facebook.com/faysal.sharker.140/" },
+    { icon: Twitter, label: "Twitter", color: "#1DA1F2" , link:"https://www.facebook.com/faysal.sharker.140/"},
+    { icon: Linkedin, label: "LinkedIn", color: "#0A66C2", link:"https://www.facebook.com/faysal.sharker.140/"},
   ];
 
   const avatarImages = [
@@ -108,24 +111,29 @@ const HeroSection = () => {
             {/* Social Media Icons */}
             <div className="flex gap-4 justify-center lg:justify-start pt-2">
               {socialIcons.map((social, index) => (
-                <motion.div
-                  key={social.label}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.5 + index * 0.15 }}
-                  whileHover={{ scale: 1.2, y: -4 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <Button
-                    size="icon"
-                    variant="outline"
-                    className="rounded-full h-12 w-12 border-2 bg-[var(--color-surface-1)] hover:shadow-lg hover:shadow-[var(--color-primary)]/40 transition-all duration-300"
-                    style={{ borderColor: `${social.color}60` }}
-                    aria-label={social.label}
+              <a 
+              
+                 key={social.label}
+              href={social.link} target="_blank">
+                  <motion.div
+                 
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.5 + index * 0.15 }}
+                    whileHover={{ scale: 1.2, y: -4 }}
+                    whileTap={{ scale: 0.95 }}
                   >
-                    <social.icon className="h-5 w-5" style={{ color: social.color }} />
-                  </Button>
-                </motion.div>
+                    <Button
+                      size="icon"
+                      variant="outline"
+                      className="rounded-full h-12 w-12 border-2 bg-[var(--color-surface-1)] hover:shadow-lg hover:shadow-[var(--color-primary)]/40 transition-all duration-300"
+                      style={{ borderColor: `${social.color}60` }}
+                      aria-label={social.label}
+                    >
+                      <social.icon  className="h-5 w-5" style={{ color: social.color }} />
+                    </Button>
+                  </motion.div>
+              </a>
               ))}
             </div>
           </motion.div>
@@ -157,9 +165,10 @@ const HeroSection = () => {
                 className="relative"
               >
                 <div className="relative w-72 h-72 md:w-80 md:h-80 lg:w-96 lg:h-96 rounded-full overflow-hidden border-[6px] border-[var(--color-primary)]/40 shadow-2xl shadow-[var(--color-primary)]/30">
-                  <img
+                  <Image
                     src="/faysalsarker.png"
                     alt="Profile"
+                    fill
                     className="w-full h-full object-cover"
                   />
                 </div>

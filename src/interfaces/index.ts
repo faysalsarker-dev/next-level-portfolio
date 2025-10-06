@@ -1,6 +1,7 @@
 
 export interface IBlog {
   _id?: string;
+  slug:string;
   title: string;
   content: string;
   thumbnail?: string;

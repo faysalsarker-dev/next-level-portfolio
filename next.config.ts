@@ -12,7 +12,6 @@ images: {
       },
 
 
-
 };
 
 export default nextConfig;

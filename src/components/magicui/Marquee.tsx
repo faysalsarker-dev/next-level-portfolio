@@ -1,4 +1,15 @@
 import { cn } from "@/lib/utils";
+import { HTMLAttributes, ReactNode } from "react";
+
+interface MarqueeProps extends HTMLAttributes<HTMLDivElement> {
+  className?: string;
+  reverse?: boolean;
+  pauseOnHover?: boolean;
+  children: ReactNode;
+  vertical?: boolean;
+  repeat?: number;
+}
+
 
 export function Marquee({
   className,
@@ -8,7 +19,7 @@ export function Marquee({
   vertical = false,
   repeat = 4,
   ...props
-}) {
+}: MarqueeProps) {
   return (
     (<div
       {...props}

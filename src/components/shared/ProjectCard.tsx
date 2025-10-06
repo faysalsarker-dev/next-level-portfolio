@@ -30,7 +30,7 @@ const ProjectCard = ({ project }: { project: IProject }) => {
   const [tab, setTab] = useState("overview");
 
   const {
-    _id,
+    
     title,
     thumbnail,
     description,

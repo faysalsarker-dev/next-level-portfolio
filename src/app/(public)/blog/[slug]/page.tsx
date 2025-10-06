@@ -15,7 +15,7 @@ import BackButton from "@/components/shared/BackButton";
 
 export async function generateStaticParams() {
   try {
-    const url = `/blogs`;
+    const url = `/blog`;
     const blogs = await fetchWithTag<IBlog[]>(url, { tag: "blogs" });
     return blogs?.data?.map((blog) => ({ slug: blog.slug })) ?? [];
   } catch {

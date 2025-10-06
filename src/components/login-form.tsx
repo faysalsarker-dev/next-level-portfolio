@@ -3,7 +3,6 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { FieldValues, useForm } from "react-hook-form";
-import { signIn } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -16,9 +15,13 @@ import {
 } from "@/components/ui/form";
 import { Lock, Mail } from "lucide-react";
 import { fetchWithTag } from "@/lib/fetchWithTag";
+import { useToast } from "@/hooks/use-toast";
+import { useRouter } from "next/navigation";
 
 export default function LoginForm() {
   const [loading, setLoading] = useState(false);
+  const { toast } = useToast();
+const router = useRouter();
 
   const form = useForm<FieldValues>({
     defaultValues: {
@@ -27,30 +30,45 @@ export default function LoginForm() {
     },
   });
 
-  const onSubmit = async (values: FieldValues) => {
-    try {
-      setLoading(true);
 
+const onSubmit = async (values: FieldValues) => {
+  try {
+    setLoading(true);
 
-   const result = await fetchWithTag(`/user/login`, {
-        method:'POST',
-        data: {
-             ...values
-        },
-        isFormData: false,
-        tag: "auth",
-      });
+    const result = await fetchWithTag(`/user/login`, {
+      method: "POST",
+      data: values,
+      isFormData: false,
+      tag: "auth",
+    });
 
-    //   await signIn("credentials", {
-    //     ...values,
-    //     callbackUrl: "/dashboard",
-    //   });
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
+    if (!result?.success) {
+      throw new Error(result?.message || "Login failed");
     }
-  };
+
+toast({
+  title: "Login Successful",
+  description: "You have been logged in successfully.",
+  duration: 1500,
+});
+
+     setTimeout(() => {
+      router.push("/dashboard"); 
+    }, 250);
+
+
+  } catch (err) {
+    console.error(err);
+    toast({
+      title: "Error",
+      description: "Login failed. Please try again.",
+      variant: "destructive",
+    });
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <div className="relative flex justify-center items-center min-h-screen ">

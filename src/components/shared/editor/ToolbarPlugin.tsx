@@ -23,7 +23,6 @@ import {
   AlignRight,
   AlignJustify,
   Link,
-  Image,
   Undo,
   Redo,
 } from "lucide-react";
@@ -268,7 +267,6 @@ export const ToolbarPlugin = () => {
         className="h-8 w-8 p-0"
         title="Insert Image"
       >
-        <Image className="h-4 w-4" />
       </Button>
     </div>
   );

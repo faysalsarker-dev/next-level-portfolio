@@ -61,13 +61,30 @@ const onSubmit = async (data: IProject) => {
     formData.append("liveSite", data.liveSite?.trim() || "");
     formData.append("status", data.status);
 
-    // Append features and technologies as JSON strings
-    formData.append("features", JSON.stringify(data.features.filter(f => f.trim() !== "")));
-    formData.append("technologies", JSON.stringify(data.technologies.filter(t => t.trim() !== "")));
 
-    // Append the image file if exists
+    const cleanfeatures = (data.features || [])
+      .map(k => k.trim())
+      .filter(Boolean);
+
+      
+    formData.append("features", JSON.stringify(cleanfeatures));
+
+
+
+
+        const cleantechnologies = (data.technologies || [])
+      .map(k => k.trim())
+      .filter(Boolean);
+    formData.append("technologies", JSON.stringify(cleantechnologies));
+
+
     if (thumbnail) {
       formData.append("file", thumbnail);
+    }
+
+
+   for (const [key, value] of formData.entries()) {
+      console.log(`${key}:`, value);
     }
 
     const method = project ? "PUT" : "POST";

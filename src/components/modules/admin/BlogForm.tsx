@@ -68,42 +68,70 @@ const { fields: keywordFields, append: addKeyword, remove: removeKeyword } = use
 });
 
 
+
+ 
+
 const onSubmit = async (data: IBlog) => {
   try {
     setLoading(true);
 
     const formData = new FormData();
 
-    // Basic fields
-    formData.append("title", data.title);
-    formData.append("content", data.content);
-    formData.append("status", data.status ?? "draft");
+    // === Basic Fields ===
+    formData.append("title", data.title?.trim() || "");
+    formData.append("content", data.content?.trim() || "");
+    formData.append("status", data.status || "draft");
 
-    // Append thumbnail if it exists and is a File
+(data.categories || []).forEach(category => {
+  if (category?.trim()) formData.append("categories", category.trim());
+});
+
+    // === Thumbnail ===
     if (thumbnail instanceof File) {
       formData.append("file", thumbnail);
     }
 
-    // Append categories and tags as JSON strings
-    formData.append("categories", JSON.stringify(data.categories?.filter(c => c && c.trim() !== "") || []));
-    formData.append("tags", JSON.stringify(data.tags?.filter(t => t && t.trim() !== "") || []));
+    // === Array Fields ===
+    const cleanCategories = (data.categories || [])
+      .map(c => c.trim())
+      .filter(Boolean);
 
-    // Append meta object as JSON string
+    const cleanTags = (data.tags || [])
+      .map(t => t.trim())
+      .filter(Boolean);
+
+    const cleanKeywords = (data.meta?.seoKeywords || [])
+      .map(k => k.trim())
+      .filter(Boolean);
+
+    // Append as JSON strings
+    formData.append("categories", JSON.stringify(cleanCategories));
+    formData.append("tags", JSON.stringify(cleanTags));
+
+    // === Meta Object ===
     const metaData = {
-      seoTitle: data.meta?.seoTitle || "",
-      seoDescription: data.meta?.seoDescription || "",
-      readTime: data.meta?.readTime || 0,
-      seoKeywords: data.meta?.seoKeywords?.filter(k => k && k.trim() !== "") || [],
+      seoTitle: data.meta?.seoTitle?.trim() || "",
+      seoDescription: data.meta?.seoDescription?.trim() || "",
+      readTime: Number(data.meta?.readTime) || 0,
+      seoKeywords: cleanKeywords,
     };
+
     formData.append("meta", JSON.stringify(metaData));
 
+    // === Optional Debugging ===
+    // Log data to verify what’s being sent (optional)
+    for (const [key, value] of formData.entries()) {
+      console.log(`${key}:`, value);
+    }
+
+    // === API Call ===
     const method = blog ? "PUT" : "POST";
     const url = blog ? `/blog/${blog._id}` : `/blog`;
 
     await fetchWithTag(url, {
       method,
       data: formData,
-      isFormData: true, 
+      isFormData: true,
       tag: "blogs",
     });
 
@@ -126,7 +154,6 @@ const onSubmit = async (data: IBlog) => {
   }
 };
 
- 
 
   return (
     <motion.form
@@ -172,6 +199,7 @@ const onSubmit = async (data: IBlog) => {
           control={control}
           render={({ field }) => (
             <Select
+            
               onValueChange={(value) => field.onChange([value])}
               value={field.value?.[0] || ""}
             >

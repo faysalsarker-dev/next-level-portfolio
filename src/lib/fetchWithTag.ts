@@ -45,7 +45,6 @@ export async function fetchWithTag<T>(
   }
 
   const res = await fetch(`${baseUrl}${url}` , fetchOptions);
-
   if (!res.ok) {
     const text = await res.text();
     console.error(`❌ Error fetching from ${url}:`, text);

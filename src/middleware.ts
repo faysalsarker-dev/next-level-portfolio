@@ -17,6 +17,7 @@ export async function middleware(req: NextRequest) {
        headers: {
           Cookie: `accessToken=${token}`, 
         },
+        tag: "auth"
       });
       if (!res.success) {
         return NextResponse.redirect(new URL("/login", req.url));

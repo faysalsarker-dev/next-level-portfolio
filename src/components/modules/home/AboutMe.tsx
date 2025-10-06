@@ -7,7 +7,6 @@ import { IoIosMail } from "react-icons/io";
 import { FaPhoneSquareAlt } from "react-icons/fa";
 import SkillSlider from './../../ui/SkillSlider';
 import { NumberTicker } from '@/components/magicui/number-ticker';
-import { OrbitingCircles } from '@/components/magicui/orbiting-circles';
 
 const AboutMe = () => {
 
@@ -37,11 +36,7 @@ const AboutMe = () => {
               height={180}
               className="rounded-full shadow-[0_0_25px_rgba(118,44,250,0.4)]"
             />
-            <OrbitingCircles
-              radius={90}
-              color="#762CFA"
-              speed={0.8}
-            />
+        
           </div>
           <h2 className="text-2xl font-semibold mt-5">Faysal Sarker</h2>
 
@@ -73,7 +68,7 @@ const AboutMe = () => {
             <div className="absolute top-0 left-1/2 h-[5px] w-[80%] -translate-x-1/2 rounded-full bg-primary blur-[10px] shadow-[0_0_20px_theme(colors.primary)]" />
             <h3 className="text-xl font-semibold mb-2">About Me</h3>
             <p className="text-gray-300 text-sm leading-relaxed">
-              I'm a passionate full-stack developer focused on crafting elegant, scalable, and high-performance web experiences. I value clean code, thoughtful design, and meaningful digital products.
+              I&apos;m a passionate full-stack developer focused on crafting elegant, scalable, and high-performance web experiences. I value clean code, thoughtful design, and meaningful digital products.
             </p>
           </motion.div>
 

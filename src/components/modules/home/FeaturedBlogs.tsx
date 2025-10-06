@@ -6,11 +6,15 @@ import { fetchWithTag } from "@/lib/fetchWithTag";
 const FeaturedBlogs = async () => {
   try {
     const url = `/blog`;
-    const result = await fetchWithTag<IBlog>(url, { tag: "blogs" });
+    const result = await fetchWithTag<IBlog | IBlog[]>(url, { tag: "blogs" });
 
-const blogs = result?.data
+    const blogs: IBlog[] = result?.data
+      ? Array.isArray(result.data)
+        ? result.data
+        : [result.data]
+      : [];
 
-    if (!blogs) {
+    if (blogs.length === 0) {
       return (
         <section className="relative py-16 px-4 text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-4 text-white">
@@ -30,7 +34,7 @@ const blogs = result?.data
 
         {/* Blog Cards Grid */}
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-          {blogs?.map((blog: IBlog, i: number) => (
+          {blogs.map((blog, i) => (
             <BlogCard key={blog._id || i} blog={blog} />
           ))}
         </div>
@@ -44,7 +48,9 @@ const blogs = result?.data
         <h2 className="text-3xl md:text-4xl font-bold mb-4 text-white">
           Featured Blogs
         </h2>
-        <p className="text-red-400">Failed to load featured blogs. Please try again later.</p>
+        <p className="text-red-400">
+          Failed to load featured blogs. Please try again later.
+        </p>
       </section>
     );
   }
